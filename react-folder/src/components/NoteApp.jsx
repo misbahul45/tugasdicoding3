@@ -28,16 +28,17 @@ const NoteApp = () => {
     const handleForm=(e)=>{
         e.preventDefault()
         if(editItem){
-            if(editItem.arsip){
-                const indexItem=arsip.findIndex((item)=>item.id===editItem.id)
-                arsip[indexItem]={
+            if(editItem.archived){
+                const allArsip=[...arsip]
+                const indexItem=allArsip.findIndex((item)=>item.id===editItem.id)
+                allArsip[indexItem]={
                     id:editItem.id,
                     tittle:e.target.tittle.value,
                     body:e.target.content.value,
-                    craetedAt:new Date().toLocaleString(),
+                    createdAt:new Date().toLocaleString(),
                     archived:editItem.archived
                 }
-                setArsip([...arsip])
+                setArsip(allArsip)
                 setEditItem("")
                 setSearchItem([])
             }else{
@@ -72,7 +73,7 @@ const NoteApp = () => {
                     id:new Date().getTime(),
                     tittle:e.target.tittle.value,
                     body:e.target.content.value,
-                    createdAt:new Date().getTime().toLocaleString(),
+                    createdAt:new Date().toLocaleString(),
                     archived:false
                 }])
                 e.target.tittle.value=""
@@ -171,15 +172,75 @@ const NoteApp = () => {
                 <input type="text" ref={actived} onChange={searchNote} placeholder="Search Note" className="w-full px-10 py-3 shadow-lg rounded-sm outline-none focus:border-b-2 focus:border-blue-500" />
                     <AiOutlineSearch className="absolute left-2 top-3 w-7 h-7 opacity-30 cursor-pointer" onClick={activeInput}/>
                 </div>
-                <div className={`grid ${content.length>4?"lg:grid-cols-3" : "lg:grid-cols-2"} gap-5 max-h-[85vh] ${content.length>2?"overflow-y-scroll":""} max-w-full flex-1 px-5`}>
-                {searchItem.length==0&&allData.length==0&&searchDisplay===false?
-                            activeArsip?
-                                arsip.map((item)=>{
+                <div className={`${content.length>2?"xl:overflow-auto overflow-y-scroll":""} py-7`}>
+                    <div className={`grid ${content.length>4?"lg:grid-cols-3" : "lg:grid-cols-2"}  gap-5 max-h-[85vh]  max-w-full flex-1 px-5`}>
+                    {searchItem.length==0&&allData.length==0&&searchDisplay===false?
+                                activeArsip?
+                                    arsip.map((item)=>{
+                                        return(
+                                            <div className={`relative shadow-xl py-5 px-2 rounded ${colorEdit&&item.id===editItem.id ? "bg-blue-500":"bg-red-500"} min-h-[250px]`} key={item.id}>
+                                                <p className="absolute top-1 left-2 text-sm opacity-80 text-white capitalize w-21">edit : {item.createdAt}</p>
+                                                <p className="absolute top-1 right-6 text-sm opacity-80 text-green-400">{item.archived?"arsip":""}</p>
+                                                <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>editArsip(item.id)}>
+                                                    <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
+                                                    <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
+                                                </div>
+                                                <div className="absolute top-[-30px] right-[-10px] flex flex-col items-center group z-20" >
+                                                    <div className="bg-gray-800 px-3 py-1 w-[100px] rounded-lg text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">
+                                                        <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleArsip(item.id)}>Arsip</p>
+                                                        <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleCancleArsip(item.id)}>Cancel</p>
+                                                    </div>
+                                                    <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
+                                                </div>
+                                                <h1 className="capitalize text-lg text-center text-white">{item.tittle}</h1>
+                                                <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify text-white">{item.body.substring(0,200)}......</p>
+                                                <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>readArsip(item.id)}>
+                                                    <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
+                                                    <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
+                                                </div>
+                                                <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={()=>deleteArsip(item.id)}>
+                                                    <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">delete</p>
+                                                    <AiFillDelete className=" w-7 h-7 text-red-800 cursor-pointer"/>
+                                                </div>
+                                            </div>
+                                    )
+                                    })
+                                    :
+                                    content.map((item)=>{
                                     return(
-                                        <div className={`relative shadow-xl py-5 px-2 rounded ${colorEdit&&item.id===editItem.id ? "bg-blue-500":"bg-red-500"} min-h-[250px]`} key={item.id}>
-                                            <p className="absolute top-1 left-2 text-sm opacity-80 text-white capitalize w-21">edit : {item.createdAt}</p>
-                                            <p className="absolute top-1 right-6 text-sm opacity-80 text-green-400">{item.archived?"arsip":""}</p>
-                                            <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>editArsip(item.id)}>
+                                        <div className={`relative shadow-xl py-5 px-2 rounded ${colorEdit&&item.id===editItem.id?"bg-green-500 text-white":"bg-gray-300"} min-h-[250px] `} key={item.id}>
+                                            <p className="absolute top-1 left-2 text-sm opacity-80 text-slate-50 capitalize w-21">edit : {item.createdAt}</p>
+                                            <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>handleEditItem(item.id)}>
+                                                <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
+                                                <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
+                                            </div>
+                                            <div className="absolute top-[-30px] right-[-10px] flex flex-col items-center group z-40" >
+                                                <div className="bg-gray-800 px-3 py-1 w-[100px] rounded-lg text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">
+                                                    <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleArsip(item.id)}>Arsip</p>
+                                                    <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleCancleArsip(item.id)}>Cancel</p>
+                                                </div>
+                                                <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
+                                            </div>
+                                            <h1 className="capitalize text-lg text-center">{item.tittle}</h1>
+                                            <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify">{item.body.substring(0,400)}......</p>
+                                            <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>handleRead(item.id)}>
+                                                <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
+                                                <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
+                                            </div>
+                                            <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={()=>deleteNote(item.id)}>
+                                                <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">delete</p>
+                                                <AiFillDelete className=" w-7 h-7 text-red-800 cursor-pointer"/>
+                                            </div>
+                                        </div>
+                                    )
+                                    })
+                                :
+                                searchItem.map((item)=>{
+                                    return(
+                                        <div className={`relative shadow-xl py-5 px-2 rounded ${item.archived?"bg-red-500":"bg-gray-200"} min-h-[250px]`} key={item.id}>
+                                            <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.createdAt}</p>
+                                            <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.archived?"arsip":""}</p>
+                                            <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={item.archived?()=>editArsip(item.id):()=>handleEditItem(item.id)}>
                                                 <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
                                                 <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
                                             </div>
@@ -190,84 +251,25 @@ const NoteApp = () => {
                                                 </div>
                                                 <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                             </div>
-                                            <h1 className="capitalize text-lg text-center text-white">{item.tittle}</h1>
-                                            <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify text-white">{item.body.substring(0,200)}......</p>
-                                            <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>readArsip(item.id)}>
+                                            <h1 className={`capitalize text-lg text-center ${item.archived?"text-white":""}`}>{item.tittle}</h1>
+                                            <p className={`first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify ${item.archived?"text-white":""}`}>{item.body.substring(0,400)}......</p>
+                                            <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={item.archived?()=>readArsip(item.id):()=>handleRead(item.id)}>
                                                 <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                                 <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
                                             </div>
-                                            <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={()=>deleteArsip(item.id)}>
+                                            <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={item.archived?()=>deleteArsip(item.id):()=>deleteNote(item.id)}>
                                                 <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">delete</p>
                                                 <AiFillDelete className=" w-7 h-7 text-red-800 cursor-pointer"/>
                                             </div>
-                                        </div>
-                                  )
-                                })
-                                :
-                                content.map((item)=>{
-                                return(
-                                    <div className={`relative shadow-xl py-5 px-2 rounded ${colorEdit&&item.id===editItem.id?"bg-green-500 text-white":"bg-gray-300"} min-h-[250px]`} key={item.id}>
-                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-slate-50 capitalize w-21">edit : {item.createdAt}</p>
-                                        <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.archived?"arsip":""}</p>
-                                        <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>handleEditItem(item.id)}>
-                                            <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
-                                            <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
-                                        </div>
-                                        <div className="absolute top-[-30px] right-[-10px] flex flex-col items-center group z-20" >
-                                            <div className="bg-gray-800 px-3 py-1 w-[100px] rounded-lg text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">
-                                                <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleArsip(item.id)}>Arsip</p>
-                                                <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleCancleArsip(item.id)}>Cancel</p>
-                                            </div>
-                                            <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
-                                        </div>
-                                        <h1 className="capitalize text-lg text-center">{item.tittle}</h1>
-                                        <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify">{item.body.substring(0,400)}......</p>
-                                        <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>handleRead(item.id)}>
-                                            <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
-                                            <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
-                                        </div>
-                                        <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={()=>deleteNote(item.id)}>
-                                            <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">delete</p>
-                                            <AiFillDelete className=" w-7 h-7 text-red-800 cursor-pointer"/>
-                                        </div>
                                     </div>
-                                  )
+                                    )
                                 })
-                            :
-                            searchItem.map((item)=>{
-                                return(
-                                    <div className={`relative shadow-xl py-5 px-2 rounded ${item.archived?"bg-red-500":"bg-gray-200"} min-h-[250px]`} key={item.id}>
-                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.createdAt}</p>
-                                        <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.archived?"arsip":""}</p>
-                                        <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={item.archived?()=>editArsip(item.id):()=>handleEditItem(item.id)}>
-                                            <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
-                                            <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
-                                        </div>
-                                        <div className="absolute top-[-30px] right-[-10px] flex flex-col items-center group z-20" >
-                                            <div className="bg-gray-800 px-3 py-1 w-[100px] rounded-lg text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">
-                                                <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleArsip(item.id)}>Arsip</p>
-                                                <p className="hover:border-b-2 hover:border-blue-500 cursor-pointer" onClick={()=>handleCancleArsip(item.id)}>Cancel</p>
-                                            </div>
-                                            <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
-                                        </div>
-                                        <h1 className={`capitalize text-lg text-center ${item.archived?"text-white":""}`}>{item.tittle}</h1>
-                                        <p className={`first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify ${item.archived?"text-white":""}`}>{item.body.substring(0,400)}......</p>
-                                        <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={item.archived?()=>readArsip(item.id):()=>handleRead(item.id)}>
-                                            <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
-                                            <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
-                                        </div>
-                                        <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={item.archived?()=>deleteArsip(item.id):()=>deleteNote(item.id)}>
-                                            <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">delete</p>
-                                            <AiFillDelete className=" w-7 h-7 text-red-800 cursor-pointer"/>
-                                        </div>
-                                </div>
-                                )
-                            })
-                        }
+                            }
+                    </div>
                 </div>
                 </>
                 :
-                <h1 className="text-7xl opacity-10">No Note in Directory</h1>
+                <h1 className="text-7xl opacity-10">Tidak ada Catatan</h1>
             }
         </div>
         </div>
