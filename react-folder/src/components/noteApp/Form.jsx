@@ -12,7 +12,7 @@ const LeftBar=forwardRef((props,ref)=>{
 
     if(editItem.tittle){
       inputRef.current.value=editItem.tittle
-      contentRef.current.value=editItem.content
+      contentRef.current.value=editItem.body
     }
     return(
        <div className="w-full max-w-sm max-h-screen">

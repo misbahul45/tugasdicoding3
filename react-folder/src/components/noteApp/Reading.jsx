@@ -11,7 +11,7 @@ const Reading =(props)=> {
         <div className={`${readItem?"scale-100":"scale-0"} fixed left-1/2 top-1/2 transform translate-x-[-50%] translate-y-[-50%] overflow-y-scroll w-full max-w-5xl py-5 px-2 h-[80vh] bg-gray-300 z-20 rounded-lg shadow-2xl transition-all duration-500 ease-in-out`}>
             <div>
                 <h1 className="text-center capitalize font-semibold text-lg">{readItem.tittle}</h1>
-                <p >{readItem.content}</p>
+                <p >{readItem.body}</p>
             </div>
         </div>
    </> 

@@ -14,6 +14,7 @@ const NoteApp = () => {
     const [editItem,setEditItem]=useState("")
     const [readItem,setReadItem]=useState("")
     const [erorTitle,setErorTitle]=useState("")
+    const [colorEdit,setColorEdit]=useState(false)
     const actived=useRef()
     const activeInput=()=>{
         actived.current.tittle.focus() 
@@ -54,6 +55,7 @@ const NoteApp = () => {
             }
             e.target.tittle.value=""
             e.target.content.value=""
+            setColorEdit(false)
         }else{
             if(e.target.tittle.value===""){
                 setErorTitle("Please fill the tittle")
@@ -67,10 +69,10 @@ const NoteApp = () => {
                 },1000)
             }else{
                 setContent([...content,{
-                    id:new Date().getTime().toString(),
+                    id:new Date().getTime(),
                     tittle:e.target.tittle.value,
                     body:e.target.content.value,
-                    createdAt:new Date().toLocaleString(),
+                    createdAt:new Date().getTime().toLocaleString(),
                     archived:false
                 }])
                 e.target.tittle.value=""
@@ -102,6 +104,7 @@ const NoteApp = () => {
     const handleEditItem=(id)=>{
         const item=content.find((item)=>item.id===id)
         setEditItem(item)
+        setColorEdit(true)
     }
     const handleRead=(id)=>{
         const item=content.find((item)=>item.id===id)
@@ -144,6 +147,7 @@ const NoteApp = () => {
     }
     const editArsip=(id)=>{
         setEditItem(arsip.find((item)=>item.id===id))
+        setColorEdit(true)
     }
     const readArsip=(id)=>{
         setReadItem(arsip.find((item)=>item.id===id))
@@ -172,7 +176,7 @@ const NoteApp = () => {
                             activeArsip?
                                 arsip.map((item)=>{
                                     return(
-                                        <div className="relative shadow-xl py-5 px-2 rounded bg-red-500 min-h-[250px]" key={item.id}>
+                                        <div className={`relative shadow-xl py-5 px-2 rounded ${colorEdit&&item.id===editItem.id ? "bg-blue-500":"bg-red-500"} min-h-[250px]`} key={item.id}>
                                             <p className="absolute top-1 left-2 text-sm opacity-80 text-white capitalize w-21">edit : {item.createdAt}</p>
                                             <p className="absolute top-1 right-6 text-sm opacity-80 text-green-400">{item.archived?"arsip":""}</p>
                                             <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>editArsip(item.id)}>
@@ -187,7 +191,7 @@ const NoteApp = () => {
                                                 <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                             </div>
                                             <h1 className="capitalize text-lg text-center text-white">{item.tittle}</h1>
-                                            <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify text-white">{content.length<3?item.body.substring(0,800):content.length<5?item.body.substring(0,350):item.body.substring(0,170)}......</p>
+                                            <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify text-white">{item.body.substring(0,200)}......</p>
                                             <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>readArsip(item.id)}>
                                                 <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                                 <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
@@ -202,8 +206,8 @@ const NoteApp = () => {
                                 :
                                 content.map((item)=>{
                                 return(
-                                    <div className="relative shadow-xl py-5 px-2 rounded bg-gray-200 min-h-[250px]" key={item.id}>
-                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.createdAt}</p>
+                                    <div className={`relative shadow-xl py-5 px-2 rounded ${colorEdit&&item.id===editItem.id?"bg-green-500 text-white":"bg-gray-300"} min-h-[250px]`} key={item.id}>
+                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-slate-50 capitalize w-21">edit : {item.createdAt}</p>
                                         <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.archived?"arsip":""}</p>
                                         <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>handleEditItem(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
@@ -217,7 +221,7 @@ const NoteApp = () => {
                                             <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                         </div>
                                         <h1 className="capitalize text-lg text-center">{item.tittle}</h1>
-                                        <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify">{content.length<3?item.body.substring(0,800):content.length<5?item.body.substring(0,350)+"...":item.body.substring(0,170)}......</p>
+                                        <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify">{item.body.substring(0,400)}......</p>
                                         <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>handleRead(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                             <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
@@ -247,7 +251,7 @@ const NoteApp = () => {
                                             <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                         </div>
                                         <h1 className={`capitalize text-lg text-center ${item.archived?"text-white":""}`}>{item.tittle}</h1>
-                                        <p className={`first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify ${item.archived?"text-white":""}`}>{searchItem.length<3?item.body.substring(0,800):searchItem.length<5?item.body.substring(0,350):item.body.substring(0,170)}......</p>
+                                        <p className={`first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify ${item.archived?"text-white":""}`}>{item.body.substring(0,400)}......</p>
                                         <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={item.archived?()=>readArsip(item.id):()=>handleRead(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                             <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
