@@ -32,9 +32,9 @@ const NoteApp = () => {
                 arsip[indexItem]={
                     id:editItem.id,
                     tittle:e.target.tittle.value,
-                    content:e.target.content.value,
-                    edited:new Date().toLocaleString(),
-                    arsip:editItem.arsip
+                    body:e.target.content.value,
+                    craetedAt:new Date().toLocaleString(),
+                    archived:editItem.archived
                 }
                 setArsip([...arsip])
                 setEditItem("")
@@ -44,9 +44,9 @@ const NoteApp = () => {
                 content[indexItem]={
                     id:editItem.id,
                     tittle:e.target.tittle.value,
-                    content:e.target.content.value,
-                    edited:new Date().toLocaleString(),
-                    arsip:editItem.arsip
+                    body:e.target.content.value,
+                    createdAt:new Date().toLocaleString(),
+                    archived:editItem.archived
                 }
                 setContent([...content])
                 setEditItem("")
@@ -69,9 +69,9 @@ const NoteApp = () => {
                 setContent([...content,{
                     id:new Date().getTime().toString(),
                     tittle:e.target.tittle.value,
-                    content:e.target.content.value,
-                    edited:new Date().toLocaleString(),
-                    arsip:false
+                    body:e.target.content.value,
+                    createdAt:new Date().toLocaleString(),
+                    archived:false
                 }])
                 e.target.tittle.value=""
                 e.target.content.value=""
@@ -115,9 +115,9 @@ const NoteApp = () => {
         itemArsip={
             id:itemArsip.id,
             tittle:itemArsip.tittle,
-            content:itemArsip.content,
-            edited:itemArsip.edited,
-            arsip:true
+            body:itemArsip.body,
+            createdAt:itemArsip.createdAt,
+            archived:true
         }
         const findIndex=arsip.findIndex((item)=>item.id===id)
         if(findIndex===-1){
@@ -173,8 +173,8 @@ const NoteApp = () => {
                                 arsip.map((item)=>{
                                     return(
                                         <div className="relative shadow-xl py-5 px-2 rounded bg-red-500 min-h-[250px]" key={item.id}>
-                                            <p className="absolute top-1 left-2 text-sm opacity-80 text-white capitalize w-21">edit : {item.edited}</p>
-                                            <p className="absolute top-1 right-6 text-sm opacity-80 text-green-400">{item.arsip?"arsip":""}</p>
+                                            <p className="absolute top-1 left-2 text-sm opacity-80 text-white capitalize w-21">edit : {item.createdAt}</p>
+                                            <p className="absolute top-1 right-6 text-sm opacity-80 text-green-400">{item.archived?"arsip":""}</p>
                                             <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>editArsip(item.id)}>
                                                 <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
                                                 <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
@@ -187,7 +187,7 @@ const NoteApp = () => {
                                                 <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                             </div>
                                             <h1 className="capitalize text-lg text-center text-white">{item.tittle}</h1>
-                                            <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify text-white">{content.length<3?item.content.substring(0,800):content.length<5?item.content.substring(0,350):item.content.substring(0,170)}......</p>
+                                            <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify text-white">{content.length<3?item.body.substring(0,800):content.length<5?item.body.substring(0,350):item.body.substring(0,170)}......</p>
                                             <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>readArsip(item.id)}>
                                                 <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                                 <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
@@ -203,8 +203,8 @@ const NoteApp = () => {
                                 content.map((item)=>{
                                 return(
                                     <div className="relative shadow-xl py-5 px-2 rounded bg-gray-200 min-h-[250px]" key={item.id}>
-                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.edited}</p>
-                                        <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.arsip?"arsip":""}</p>
+                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.createdAt}</p>
+                                        <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.archived?"arsip":""}</p>
                                         <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={()=>handleEditItem(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
                                             <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
@@ -217,7 +217,7 @@ const NoteApp = () => {
                                             <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                         </div>
                                         <h1 className="capitalize text-lg text-center">{item.tittle}</h1>
-                                        <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify">{content.length<3?item.content.substring(0,800):content.length<5?item.content.substring(0,350)+"...":item.content.substring(0,170)}......</p>
+                                        <p className="first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify">{content.length<3?item.body.substring(0,800):content.length<5?item.body.substring(0,350)+"...":item.body.substring(0,170)}......</p>
                                         <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={()=>handleRead(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                             <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
@@ -232,10 +232,10 @@ const NoteApp = () => {
                             :
                             searchItem.map((item)=>{
                                 return(
-                                    <div className={`relative shadow-xl py-5 px-2 rounded ${item.arsip?"bg-red-500":"bg-gray-200"} min-h-[250px]`} key={item.id}>
-                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.edited}</p>
-                                        <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.arsip?"arsip":""}</p>
-                                        <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={item.arsip?()=>editArsip(item.id):()=>handleEditItem(item.id)}>
+                                    <div className={`relative shadow-xl py-5 px-2 rounded ${item.archived?"bg-red-500":"bg-gray-200"} min-h-[250px]`} key={item.id}>
+                                        <p className="absolute top-1 left-2 text-sm opacity-80 text-gray-400 capitalize w-21">edit : {item.createdAt}</p>
+                                        <p className="absolute top-1 right-6 text-sm opacity-80 text-green-500">{item.archived?"arsip":""}</p>
+                                        <div className="absolute bottom-1 left-0 flex flex-col items-center group" onClick={item.archived?()=>editArsip(item.id):()=>handleEditItem(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Edit</p>
                                             <AiFillEdit className=" w-7 h-7 text-blue-800 cursor-pointer"/>
                                         </div>
@@ -246,13 +246,13 @@ const NoteApp = () => {
                                             </div>
                                             <AiOutlineMore className=" w-7 h-7 text-gray-800 cursor-pointer"/>
                                         </div>
-                                        <h1 className={`capitalize text-lg text-center ${item.arsip?"text-white":""}`}>{item.tittle}</h1>
-                                        <p className={`first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify ${item.arsip?"text-white":""}`}>{searchItem.length<3?item.content.substring(0,800):searchItem.length<5?item.content.substring(0,350):item.content.substring(0,170)}......</p>
-                                        <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={item.arsip?()=>readArsip(item.id):()=>handleRead(item.id)}>
+                                        <h1 className={`capitalize text-lg text-center ${item.archived?"text-white":""}`}>{item.tittle}</h1>
+                                        <p className={`first-letter:font-bold first-letter:text-lg first-letter:uppercase text-justify ${item.archived?"text-white":""}`}>{searchItem.length<3?item.body.substring(0,800):searchItem.length<5?item.body.substring(0,350):item.body.substring(0,170)}......</p>
+                                        <div className="absolute bottom-1 left-[49%] transform translate-x-[-60%] flex flex-col items-center group" onClick={item.archived?()=>readArsip(item.id):()=>handleRead(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">Read</p>
                                             <AiFillRead className=" w-7 h-7 text-brown-800 cursor-pointer"/>
                                         </div>
-                                        <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={item.arsip?()=>deleteArsip(item.id):()=>deleteNote(item.id)}>
+                                        <div className="absolute bottom-1 right-0 flex flex-col items-center group" onClick={item.archived?()=>deleteArsip(item.id):()=>deleteNote(item.id)}>
                                             <p className="bg-gray-800 px-3 py-0.5 rounded-full text-white capitalize scale-0 group-hover:scale-100 transition-all duration-500">delete</p>
                                             <AiFillDelete className=" w-7 h-7 text-red-800 cursor-pointer"/>
                                         </div>
